@@ -1,11 +1,15 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_mvp/Exception/ApiException.dart';
-import 'dart:convert';
 import 'dart:async';
 
+import 'package:flutter_mvp/base/errorHander.dart';
+import 'package:flutter_mvp/ui/home/home_page_Interface.dart';
+import 'package:flutter_mvp/utils/base_presentor.dart';
+
 ApiBaseHelper baseHelper = ApiBaseHelper();
-class ApiBaseHelper {
+class ApiBaseHelper extends BasePresenter<HomePageView>{
   final String _baseUrl = "http://159.89.164.128:4200/";
   String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4';
   Dio dio = Dio(
@@ -15,75 +19,53 @@ class ApiBaseHelper {
       },
     ),
   );
-  Future<dynamic> get(String url) async {
-    print('Api Get, url $url');
+
+  HomePageView pageView;
+  ApiBaseHelper({this.pageView});
+
+  Future<dynamic> api(String apiName,method,dynamic body)async{
+    Response response;
     var responseJson;
-    try {
-       Response response = await dio.get(_baseUrl + url);
-      responseJson = _returnResponse(response);
-    } on SocketException {
-      print('No net');
-      throw FetchDataException('No Internet connection');
+    switch(method){
+      case Method.POST:
+        try {
+          response = await dio.post(_baseUrl + apiName, data: body);
+
+          // print(response);
+          responseJson = _returnResponse(response);
+          // pageView.onError('Hello');
+        }on DioError catch (e) {
+
+          print('ERROR -->> ${e.message}\n');
+          // throw FetchDataException('Connection Failed');
+        }
+        break;
+      case Method.GET:
+        response = await dio.get(_baseUrl + apiName);
+        break;
+      case Method.PUT:
+        response = await dio.put(_baseUrl + apiName, data: body);
+        break;
+      case Method.DELETE:
+        response = await dio.delete(_baseUrl + apiName, data: body);
+        break;
     }
-    print('api get recieved!');
     return responseJson;
   }
 
-  Future<dynamic> post(String url, dynamic body) async {
-    print('Api Post, url $url');
-    var responseJson;
-    try {
-      Response response = await dio.post(_baseUrl + url, data: body);
-      responseJson = _returnResponse(response);
-    } on SocketException {
-      print('No net');
-      throw FetchDataException('No Internet connection');
-    }
-    print('api post.');
-    return responseJson;
-  }
-
-  Future<dynamic> put(String url, dynamic body) async {
-    print('Api Put, url $url');
-    var responseJson;
-    try {
-      Response response = await dio.put(_baseUrl + url, data: body);
-      responseJson = _returnResponse(response);
-    } on SocketException {
-      print('No net');
-      throw FetchDataException('No Internet connection');
-    }
-    print('api put.');
-    print(responseJson.toString());
-    return responseJson;
-  }
-
-  Future<dynamic> delete(String url) async {
-    print('Api delete, url $url');
-    var apiResponse;
-    try {
-      Response response = await dio.delete(_baseUrl + url);
-      apiResponse = _returnResponse(response);
-    } on SocketException {
-      print('No net');
-      throw FetchDataException('No Internet connection');
-    }
-    print('api delete.');
-    return apiResponse;
-  }
 }
+
+enum Method{POST,GET,DELETE,PUT}
 
 dynamic _returnResponse(Response response) {
   switch (response.statusCode) {
     case 200:
-      // var responseJson = json.decode(response.data.toString());
-      // print(responseJson);
       return response;
     case 400:
       throw BadRequestException(response.data.toString());
     case 401:
     case 403:
-      throw UnauthorisedException(response.data.toString());
+      throw UnauthorisedException(response.statusCode);
     case 500:
     default:
       throw FetchDataException(

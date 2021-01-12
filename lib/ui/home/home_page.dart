@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_mvp/ui/home_page_Interface.dart';
+import 'package:flutter_mvp/Notification.dart';
+import 'package:flutter_mvp/ui/home/home_page_Interface.dart';
 
 import 'home_page_presentor.dart';
 
@@ -26,19 +29,29 @@ class _HomePageState extends State<HomePage> implements HomePageView {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("MVP app"),
+      appBar: AppBar(
+        title: Text("MVP app"),
       ),
-      body: new Center(
-        child: new Text(_text,style: new TextStyle(fontSize: 18.0),),
+      body:  Center(
+        child: ListView.builder(
+          itemCount: notificationList.length,
+          itemBuilder: (_,index){
+            return Text(notificationList[index].id,style: new TextStyle(fontSize: 18.0),);
+          },
+        )
       ),
     );
   }
+  List<Datum> notificationList = List();
 
   @override
-  onLoadText(String text) {
+  onLoadText(text) {
     setState(() {
-      _text=text;
+      List<dynamic> data = text.data['data'];
+
+      setState(() {
+        notificationList.addAll(data.map((e) => Datum.fromJson(e)).toList());
+      });
     });
   }
 
@@ -51,11 +64,11 @@ class _HomePageState extends State<HomePage> implements HomePageView {
 
   @override
   hideLoading() {
-    // TODO: implement hideLoading
+
   }
 
   @override
   showLoading() {
-    // TODO: implement showLoading
+
   }
 }

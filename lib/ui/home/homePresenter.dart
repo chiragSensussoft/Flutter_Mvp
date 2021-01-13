@@ -14,7 +14,7 @@ class HomePagePresenter extends BasePresenter<HomePageView> implements Error {
   getText() async {
     _view.showLoading();
     Future.delayed(Duration(seconds: 12));
-    Response response = await apiClient.api('otificationList',Method.POST, {'user_id':'Hy5W+98JqVh2m0NhBhC1zg==','page':'1'});
+    Response response = await apiClient.api('notificationList',Method.POST, {'user_id':'Hy5W+98JqVh2m0NhBhC1zg==','page':'1'});
     if (response.statusCode == 200) {
       isViewAttached ? getView().onLoadText(response) : null;
       _view.hideLoading();

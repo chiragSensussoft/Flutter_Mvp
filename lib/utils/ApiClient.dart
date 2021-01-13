@@ -23,8 +23,14 @@ class ApiClient{
     var responseJson;
     switch(method){
       case Method.POST:
-        response = await dio.post(_baseUrl + apiName, data: body);
-        break;
+        try {
+          response = await dio.post(_baseUrl + apiName, data: body);
+          print(response);
+          responseJson = _returnResponse(response);
+        }on DioError catch (e) {
+          error.onErrorMsg(e.message);
+          throw FetchDataException('Connection --> Failed');
+        } break;
       case Method.GET:
         response = await dio.get(_baseUrl + apiName);
         break;
@@ -35,13 +41,7 @@ class ApiClient{
         response = await dio.delete(_baseUrl + apiName, data: body);
         break;
     }
-    try {
-      print(response);
-      responseJson = _returnResponse(response);
-    }on DioError catch (e) {
-      error.onErrorMsg(e.message);
-      throw FetchDataException('Connection --> Failed');
-    }
+
     return responseJson;
   }
 

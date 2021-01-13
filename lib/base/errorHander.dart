@@ -1,3 +1,3 @@
 abstract class Error{
-  onError(String msg);
+  onErrorMsg(String msg);
 }

@@ -1,27 +1,23 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_mvp/Exception/ApiException.dart';
 import 'dart:async';
 
 import 'package:flutter_mvp/base/errorHander.dart';
-import 'package:flutter_mvp/ui/home/home_page_Interface.dart';
-import 'package:flutter_mvp/utils/base_presentor.dart';
 
-ApiBaseHelper baseHelper = ApiBaseHelper();
-class ApiBaseHelper extends BasePresenter<HomePageView>{
+ApiClient baseHelper = ApiClient();
+class ApiClient{
+  Error error;
+  ApiClient({this.error});
+
   final String _baseUrl = "http://159.89.164.128:4200/";
   String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4';
   Dio dio = Dio(
     BaseOptions(
       headers: {
-        "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4",
+        "x-access-oken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4",
       },
     ),
   );
-
-  HomePageView pageView;
-  ApiBaseHelper({this.pageView});
 
   Future<dynamic> api(String apiName,method,dynamic body)async{
     Response response;
@@ -30,14 +26,12 @@ class ApiBaseHelper extends BasePresenter<HomePageView>{
       case Method.POST:
         try {
           response = await dio.post(_baseUrl + apiName, data: body);
-
-          // print(response);
+          print(response);
           responseJson = _returnResponse(response);
-          // pageView.onError('Hello');
         }on DioError catch (e) {
-
+          error.onErrorMsg(e.message);
           print('ERROR -->> ${e.message}\n');
-          // throw FetchDataException('Connection Failed');
+          throw FetchDataException('Connection --> Failed');
         }
         break;
       case Method.GET:
@@ -52,7 +46,10 @@ class ApiBaseHelper extends BasePresenter<HomePageView>{
     }
     return responseJson;
   }
+}
 
+abstract class ErrorHandler{
+  onErrorMsg(String msg);
 }
 
 enum Method{POST,GET,DELETE,PUT}

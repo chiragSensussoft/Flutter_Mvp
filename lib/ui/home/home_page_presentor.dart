@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_mvp/utils/api_base_helper.dart';
+import 'package:flutter_mvp/utils/ApiClient.dart';
 import 'package:flutter_mvp/utils/base_presentor.dart';
 
 import 'home_page_Interface.dart';

@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mvp/Notification.dart';
+import 'package:flutter_mvp/base/errorHander.dart';
 import 'package:flutter_mvp/ui/home/home_page_Interface.dart';
-import 'package:flutter_mvp/utils/api_base_helper.dart';
+import 'package:flutter_mvp/utils/ApiClient.dart';
 
 import 'home_page_presentor.dart';
 
@@ -14,20 +15,18 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> implements HomePageView {
+class _HomePageState extends State<HomePage> implements HomePageView,Error{
 
   String _text="Loading...";
 
   HomePagePresenter _presentor;
-  ApiBaseHelper _baseHelper;
   bool dialog;
-
+  ApiClient _baseHelper;
   @override
   void initState() {
     super.initState();
     _presentor = HomePagePresenter(this);
-    _baseHelper = ApiBaseHelper(pageView: this);
-      _presentor.attachView(this);
+    _presentor.attachView(this);
     _presentor.getText();
   }
   @override
@@ -80,10 +79,8 @@ class _HomePageState extends State<HomePage> implements HomePageView {
   }
 
   @override
-  onError(String msg) {
-    // TODO: implement onError
-    print('Meaage:$msg');
-    throw UnimplementedError();
+  onErrorMsg(String msg) {
+    print(msg);
   }
 
 }

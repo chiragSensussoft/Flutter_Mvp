@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mvp/Notification.dart';
-import 'package:flutter_mvp/base/errorHander.dart';
-import 'package:flutter_mvp/ui/home/home_page_Interface.dart';
+import 'package:flutter_mvp/ui/home/homeInterface.dart';
 import 'package:flutter_mvp/utils/ApiClient.dart';
 
-import 'home_page_presentor.dart';
+import 'homePresenter.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -15,7 +12,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> implements HomePageView,Error{
+class _HomePageState extends State<HomePage> implements HomePageView{
 
   String _text="Loading...";
 
@@ -60,10 +57,8 @@ class _HomePageState extends State<HomePage> implements HomePageView,Error{
   }
 
   @override
-  onFailLoadText() {
-    setState(() {
-      _text="Failed";
-    });
+  onFailLoadText(String msg) {
+    print("ErrorLoadText --> $msg");
   }
 
   @override
@@ -77,10 +72,4 @@ class _HomePageState extends State<HomePage> implements HomePageView,Error{
   showLoading() {
     dialog = true;
   }
-
-  @override
-  onErrorMsg(String msg) {
-    print(msg);
-  }
-
 }

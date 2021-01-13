@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flutter_mvp/base/errorHander.dart';
 
-ApiClient baseHelper = ApiClient();
 class ApiClient{
   Error error;
   ApiClient({this.error});
@@ -14,7 +13,7 @@ class ApiClient{
   Dio dio = Dio(
     BaseOptions(
       headers: {
-        "x-access-oken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4",
+        "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4",
       },
     ),
   );
@@ -30,7 +29,7 @@ class ApiClient{
           responseJson = _returnResponse(response);
         }on DioError catch (e) {
           error.onErrorMsg(e.message);
-          print('ERROR -->> ${e.message}\n');
+          // print('ERROR -->> ${e.message}\n');
           throw FetchDataException('Connection --> Failed');
         }
         break;
@@ -46,10 +45,6 @@ class ApiClient{
     }
     return responseJson;
   }
-}
-
-abstract class ErrorHandler{
-  onErrorMsg(String msg);
 }
 
 enum Method{POST,GET,DELETE,PUT}

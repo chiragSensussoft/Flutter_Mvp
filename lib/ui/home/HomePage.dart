@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mvp/ui/home/Notification.dart';
-import 'package:flutter_mvp/ui/home/homeInterface.dart';
-import 'package:flutter_mvp/utils/ApiClient.dart';
+import 'package:flutter_mvp/ui/home/model/Notification.dart';
+import 'package:flutter_mvp/ui/home/OnHomeView.dart';
+import 'package:flutter_mvp/utils/Toast.dart';
 
 import 'homePresenter.dart';
 
@@ -12,19 +12,16 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> implements HomePageView{
+class _HomePageState extends State<HomePage> implements OnHomeView{
 
-  String _text="Loading...";
-
-  HomePagePresenter _presentor;
+  HomePagePresenter _presenter;
   bool dialog;
-  ApiClient _baseHelper;
   @override
   void initState() {
     super.initState();
-    _presentor = HomePagePresenter(this);
-    _presentor.attachView(this);
-    _presentor.getText();
+    _presenter = HomePagePresenter(this);
+    _presenter.attachView(this);
+    _presenter.getText();
   }
   @override
   Widget build(BuildContext context) {
@@ -46,10 +43,9 @@ class _HomePageState extends State<HomePage> implements HomePageView{
   List<Datum> notificationList = List();
 
   @override
-  onLoadText(text) {
+  onResponseLoad(text) {
     setState(() {
-
-      List<dynamic> data = text.data['data'];
+      List<dynamic> data = text;
       setState(() {
         notificationList.addAll(data.map((e) => Datum.fromJson(e)).toList());
       });
@@ -57,8 +53,10 @@ class _HomePageState extends State<HomePage> implements HomePageView{
   }
 
   @override
-  onFailLoadText(String msg) {
-    print("ErrorLoadText --> $msg");
+  onErrorLoad(msg) {
+    Toast toast = Toast();
+    toast.overLay = false;
+    toast.showOverLay(msg, Colors.white, Colors.black54, context);
   }
 
   @override

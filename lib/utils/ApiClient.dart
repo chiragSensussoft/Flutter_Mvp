@@ -10,7 +10,7 @@ class ApiClient extends BasePresenter<BaseLoaderView>{
   ApiClient(this._loaderView);
 
   final String _baseUrl = "http://159.89.164.128:4200/";
-  String token = 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4';
+  String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAxLCJpYXQiOjE2MDk0MDg5MzEsImV4cCI6MTY0MDk0NDkzMX0.WYFJN02kGlwDazStiXDzXBgGan1xsMHO4ooEBKTbWR4';
   Dio dio = Dio();
 
   Future<dynamic> api(String apiName,method,dynamic body)async{
@@ -72,7 +72,6 @@ class ApiClient extends BasePresenter<BaseLoaderView>{
       default:
         _loaderView.onErrorLoad("Default Error");
         break;
-
     }
   }
 
